@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zoe Toelettatura — Centro Benessere per Cani e Gatti | Rosà (VI)</title>
+<meta name="description" content="Zoe Toelettatura e Centro Benessere per Cani e Gatti a Rosà (VI). Trattamenti wellness, ozono, SPA e toelettatura professionale di Arianna Faré.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFF8F0;
+    --blush: #F5DDD1;
+    --peach: #F0C4A8;
+    --sage: #B8C9A3;
+    --sage-dark: #8FA876;
+    --warm-brown: #8B6F5A;
+    --dark: #3D2E22;
+    --white: #FFFFFF;
+    --soft-shadow: 0 4px 30px rgba(61,46,34,0.08);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-body);
+    color: var(--dark);
+    background: var(--cream);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 1rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: background 0.4s, box-shadow 0.4s, padding 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(255,248,240,0.92);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 20px rgba(61,46,34,0.06);
+    padding: 0.7rem 2rem;
+  }
+  .nav-logo {
+    font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+    color: var(--warm-brown); text-decoration: none;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--warm-brown); font-weight: 500;
+    font-size: 0.95rem; letter-spacing: 0.02em; position: relative; transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 2px; background: var(--sage-dark); border-radius: 2px; transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--sage-dark); }
+  .nav-links a:hover::after { width: 100%; }
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 8px;
+  }
+  .hamburger span { width: 26px; height: 2.5px; background: var(--warm-brown); border-radius: 3px; transition: all 0.3s; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -20%; right: -10%;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, var(--blush) 0%, transparent 70%);
+    opacity: 0.6; animation: floatBlob 8s ease-in-out infinite;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -10%; left: -5%;
+    width: 450px; height: 450px; border-radius: 50%;
+    background: radial-gradient(circle, var(--sage) 0%, transparent 70%);
+    opacity: 0.3; animation: floatBlob 10s ease-in-out infinite reverse;
+  }
+  @keyframes floatBlob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.97); }
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--white); padding: 0.5rem 1.2rem; border-radius: 50px;
+    font-size: 0.85rem; font-weight: 500; color: var(--sage-dark);
+    box-shadow: var(--soft-shadow); margin-bottom: 2rem; animation: fadeInUp 0.8s ease-out;
+  }
+  .hero-badge .star { color: #F5B731; }
+  .hero h1 {
+    font-family: var(--font-display); font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 700; color: var(--dark); line-height: 1.1; margin-bottom: 0.3rem;
+    animation: fadeInUp 0.8s ease-out 0.1s both;
+  }
+  .hero h1 em { font-style: italic; color: var(--warm-brown); }
+  .hero-subtitle {
+    font-family: var(--font-display); font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 400; font-style: italic; color: var(--warm-brown);
+    margin-bottom: 1.5rem; animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+  .hero p {
+    font-size: 1.05rem; color: var(--warm-brown); line-height: 1.7;
+    max-width: 520px; margin: 0 auto 2.5rem; animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--sage-dark); color: var(--white); text-decoration: none;
+    padding: 1rem 2.2rem; border-radius: 50px; font-weight: 600; font-size: 1rem;
+    transition: all 0.3s; box-shadow: 0 8px 25px rgba(143,168,118,0.3);
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+  }
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(143,168,118,0.4); background: #7A9665; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 2rem; }
+  .section-label {
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--sage-dark); margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 700; color: var(--dark); margin-bottom: 1.5rem; line-height: 1.2;
+  }
+
+  /* CHI SIAMO */
+  .chi-siamo { background: var(--white); }
+  .chi-siamo-inner {
+    max-width: 1100px; margin: 0 auto; display: grid;
+    grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+  .chi-siamo-visual { position: relative; }
+  .chi-siamo-card {
+    background: linear-gradient(135deg, var(--blush) 0%, var(--peach) 100%);
+    border-radius: 24px; padding: 3rem; aspect-ratio: 4/5;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    position: relative; overflow: hidden;
+  }
+  .chi-siamo-card .paw-pattern {
+    position: absolute; top: 2rem; right: 2rem; font-size: 5rem; opacity: 0.15; transform: rotate(15deg);
+  }
+  .chi-siamo-card .quote {
+    font-family: var(--font-display); font-size: 1.5rem; font-style: italic;
+    color: var(--dark); line-height: 1.4;
+  }
+  .chi-siamo-card .author { margin-top: 1rem; font-weight: 600; font-size: 0.95rem; color: var(--warm-brown); }
+  .floating-badge {
+    position: absolute; top: -1rem; right: -1rem; background: var(--white);
+    border-radius: 16px; padding: 1rem 1.3rem; box-shadow: var(--soft-shadow); text-align: center;
+  }
+  .floating-badge .number { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--sage-dark); }
+  .floating-badge .label { font-size: 0.75rem; color: var(--warm-brown); font-weight: 500; }
+  .chi-siamo-text p { font-size: 1.05rem; line-height: 1.8; color: #5C4A3D; margin-bottom: 1.2rem; }
+  .chi-siamo-highlights { display: flex; gap: 1.5rem; margin-top: 2rem; }
+  .highlight-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; font-weight: 500; color: var(--warm-brown); }
+  .highlight-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sage); flex-shrink: 0; }
+
+  /* SERVIZI */
+  .servizi { background: var(--cream); }
+  .servizi-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+  .servizi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .servizio-card {
+    background: var(--white); border-radius: 20px; padding: 2.2rem 1.8rem; text-align: left;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 1px solid rgba(139,111,90,0.06); position: relative; overflow: hidden;
+  }
+  .servizio-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--sage), var(--peach));
+    transform: scaleX(0); transform-origin: left; transition: transform 0.4s;
+  }
+  .servizio-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(61,46,34,0.08); }
+  .servizio-card:hover::before { transform: scaleX(1); }
+  .servizio-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1.2rem;
+  }
+  .servizio-card:nth-child(odd) .servizio-icon { background: rgba(184,201,163,0.25); }
+  .servizio-card:nth-child(even) .servizio-icon { background: rgba(245,221,209,0.5); }
+  .servizio-card h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--dark); margin-bottom: 0.6rem; }
+  .servizio-card p { font-size: 0.9rem; line-height: 1.6; color: #7A6455; }
+
+  /* SPA BANNER */
+  .spa-banner {
+    max-width: 1100px; margin: 3rem auto 0;
+    background: linear-gradient(135deg, var(--sage) 0%, var(--sage-dark) 100%);
+    border-radius: 24px; padding: 3rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 2rem; color: var(--white);
+    position: relative; overflow: hidden;
+  }
+  .spa-banner::before {
+    content: '🫧'; position: absolute; right: 3rem; top: 50%;
+    font-size: 6rem; opacity: 0.15; transform: translateY(-50%);
+  }
+  .spa-banner h3 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .spa-banner p { font-size: 0.95rem; opacity: 0.9; line-height: 1.6; max-width: 550px; }
+  .spa-badge {
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+    border-radius: 16px; padding: 1.2rem 1.5rem; text-align: center;
+    flex-shrink: 0; position: relative; z-index: 1;
+  }
+  .spa-badge .icon { font-size: 2rem; margin-bottom: 0.3rem; }
+  .spa-badge .text { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.05em; }
+
+  /* CONTATTI */
+  .contatti { background: var(--white); }
+  .contatti-inner {
+    max-width: 1100px; margin: 0 auto; display: grid;
+    grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;
+  }
+  .contatti-info { padding-top: 1rem; }
+  .contatti-info p.lead { font-size: 1.05rem; line-height: 1.7; color: #5C4A3D; margin-bottom: 2.5rem; }
+  .contact-item { display: flex; gap: 1rem; margin-bottom: 1.8rem; align-items: flex-start; }
+  .contact-icon {
+    width: 48px; height: 48px; border-radius: 14px; background: var(--cream);
+    display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+  }
+  .contact-detail strong {
+    display: block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--sage-dark); margin-bottom: 0.2rem;
+  }
+  .contact-detail span, .contact-detail a {
+    font-size: 1rem; color: var(--dark); text-decoration: none; line-height: 1.5;
+  }
+  .contact-detail a:hover { color: var(--sage-dark); }
+  .social-links { display: flex; gap: 0.8rem; margin-top: 2rem; }
+  .social-link {
+    width: 48px; height: 48px; border-radius: 14px; background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; font-size: 1.2rem; transition: all 0.3s;
+  }
+  .social-link:hover { background: var(--sage); transform: translateY(-3px); }
+
+  /* ORARI */
+  .orari-card { background: var(--cream); border-radius: 20px; padding: 2.5rem; }
+  .orari-card h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: var(--dark); margin-bottom: 1.5rem; }
+  .orari-row {
+    display: flex; justify-content: space-between; padding: 0.7rem 0;
+    border-bottom: 1px solid rgba(139,111,90,0.08); font-size: 0.95rem;
+  }
+  .orari-row:last-of-type { border-bottom: none; }
+  .orari-row .day { color: var(--warm-brown); font-weight: 500; }
+  .orari-row .hours { color: var(--dark); font-weight: 600; }
+  .orari-row .closed { color: var(--peach); font-weight: 500; font-style: italic; }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(255,248,240,0.6);
+    text-align: center; padding: 2.5rem; font-size: 0.85rem;
+  }
+  footer .footer-name { font-family: var(--font-display); font-size: 1.1rem; color: var(--cream); margin-bottom: 0.5rem; }
+
+  /* ANIMATIONS */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* MOBILE MENU */
+  .mobile-menu {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,248,240,0.97); backdrop-filter: blur(16px); z-index: 999;
+    flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+  }
+  .mobile-menu.active { display: flex; }
+  .mobile-menu a { font-family: var(--font-display); font-size: 1.8rem; color: var(--dark); text-decoration: none; font-weight: 600; }
+  .mobile-close { position: absolute; top: 1.5rem; right: 2rem; background: none; border: none; font-size: 2rem; color: var(--warm-brown); cursor: pointer; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .chi-siamo-inner, .contatti-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .servizi-grid { grid-template-columns: 1fr 1fr; }
+    .chi-siamo-visual { order: -1; }
+    .chi-siamo-card { aspect-ratio: auto; padding: 2.5rem; }
+    .spa-banner { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    .servizi-grid { grid-template-columns: 1fr; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .chi-siamo-highlights { flex-direction: column; gap: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="#home" class="nav-logo"><span>🐾</span> Zoe Toelettatura</a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#chi-siamo">Chi Siamo</a></li>
+    <li><a href="#servizi">Servizi</a></li>
+    <li><a href="#contatti">Contatti</a></li>
+  </ul>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="toggleMenu()">✕</button>
+  <a href="#home" onclick="toggleMenu()">Home</a>
+  <a href="#chi-siamo" onclick="toggleMenu()">Chi Siamo</a>
+  <a href="#servizi" onclick="toggleMenu()">Servizi</a>
+  <a href="#contatti" onclick="toggleMenu()">Contatti</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-badge"><span class="star">★</span> 4.8 su Google — I nostri clienti ci adorano</div>
+    <h1>Zoe <em>Toelettatura</em></h1>
+    <p class="hero-subtitle">Centro Benessere per Cani e Gatti</p>
+    <p>A Rosà, ci prendiamo cura dei tuoi amici a quattro zampe con passione, professionalità e tanta dolcezza. Trattamenti wellness, SPA ad ozono e toelettatura su misura.</p>
+    <a href="tel:+393420056508" class="hero-cta">Chiamaci ☎ 342 005 6508</a>
+  </div>
+</section>
+
+<!-- CHI SIAMO -->
+<section class="chi-siamo" id="chi-siamo">
+  <div class="chi-siamo-inner">
+    <div class="chi-siamo-visual reveal">
+      <div class="chi-siamo-card">
+        <div class="paw-pattern">🐾</div>
+        <p class="quote">"Ogni animale merita di essere trattato con amore e rispetto. Da Zoe, non è solo toelettatura — è benessere."</p>
+        <p class="author">— Arianna Faré, fondatrice</p>
+      </div>
+      <div class="floating-badge">
+        <div class="number">4.8</div>
+        <div class="label">★ su Google</div>
+      </div>
+    </div>
+    <div class="chi-siamo-text reveal">
+      <p class="section-label">Chi Siamo</p>
+      <h2 class="section-title">Passione per gli animali, cura nei dettagli</h2>
+      <p>Zoe Toelettatura nasce dalla passione di Arianna per gli animali e dalla volontà di creare un luogo dove cani e gatti possano sentirsi a proprio agio, coccolati e rispettati.</p>
+      <p>Nel nostro centro a Rosà (VI) utilizziamo tecniche e prodotti di alta qualità, dai bagni specifici per ogni tipologia di pelo e cute ai trattamenti SPA con idromassaggio ad ozono e nanobolle. Ogni animale riceve un trattamento personalizzato.</p>
+      <p>Siamo punto IdroPet certificato, garanzia di tecnologia all'avanguardia per il benessere del tuo animale.</p>
+      <div class="chi-siamo-highlights">
+        <div class="highlight-item"><div class="highlight-dot"></div> Prodotti professionali</div>
+        <div class="highlight-item"><div class="highlight-dot"></div> Punto IdroPet</div>
+        <div class="highlight-item"><div class="highlight-dot"></div> Accesso disabili</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVIZI -->
+<section class="servizi" id="servizi">
+  <div class="servizi-inner">
+    <p class="section-label">I Nostri Servizi</p>
+    <h2 class="section-title">Tutto per il benessere del tuo amico</h2>
+    <div class="servizi-grid">
+      <div class="servizio-card reveal">
+        <div class="servizio-icon">🛁</div>
+        <h3>Bagno &amp; Asciugatura</h3>
+        <p>Bagni specifici per tipologia di cute e pelo, con prodotti professionali selezionati e asciugatura delicata.</p>
+      </div>
+      <div class="servizio-card reveal">
+        <div class="servizio-icon">✂️</div>
+        <h3>Taglio &amp; Tosatura</h3>
+        <p>Tagli personalizzati a forbice e a macchina, per esaltare la bellezza naturale di ogni razza e mantello.</p>
+      </div>
+      <div class="servizio-card reveal">
+        <div class="servizio-icon">🐕</div>
+        <h3>Stripping</h3>
+        <p>Tecnica professionale per razze a pelo duro. Mantiene il mantello sano, forte e nella sua texture naturale.</p>
+      </div>
+      <div class="servizio-card reveal">
+        <div class="servizio-icon">💅</div>
+        <h3>Taglio Unghie</h3>
+        <p>Taglio sicuro e delicato delle unghie, fondamentale per la salute delle zampe e il comfort quotidiano.</p>
+      </div>
+      <div class="servizio-card reveal">
+        <div class="servizio-icon">👂</div>
+        <h3>Pulizia Orecchie</h3>
+        <p>Pulizia accurata del condotto auricolare per prevenire infezioni e mantenere le orecchie sane e pulite.</p>
+      </div>
+      <div class="servizio-card reveal">
+        <div class="servizio-icon">🦷</div>
+        <h3>Ultrasuoni Dentali</h3>
+        <p>Pulizia dei denti con tecnologia a ultrasuoni Emmipet, delicata e senza anestesia per una bocca sana.</p>
+      </div>
+    </div>
+    <div class="spa-banner reveal">
+      <div>
+        <h3>SPA &amp; Trattamenti Wellness</h3>
+        <p>Idromassaggio con ozono, trattamenti con ossigeno e nanobolle, acqua corrente ozonizzata, bagni al latte, cromoterapia e bagging/sauna. Un'esperienza rigenerante per il tuo animale.</p>
+      </div>
+      <div class="spa-badge">
+        <div class="icon">💎</div>
+        <div class="text">IdroPet<br>Point</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATTI -->
+<section class="contatti" id="contatti">
+  <div class="contatti-inner">
+    <div class="contatti-info reveal">
+      <p class="section-label">Contatti</p>
+      <h2 class="section-title">Vieni a trovarci</h2>
+      <p class="lead">Siamo a Rosà, in provincia di Vicenza. Chiamaci o scrivici su WhatsApp per prenotare un appuntamento — saremo felici di prenderci cura del tuo amico.</p>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div class="contact-detail">
+          <strong>Indirizzo</strong>
+          <span>P.zza Mons. Ciffo 8, 36027 Rosà (VI)</span>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div class="contact-detail">
+          <strong>Telefono &amp; WhatsApp</strong>
+          <a href="tel:+393420056508">342 005 6508</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📸</div>
+        <div class="contact-detail">
+          <strong>Instagram</strong>
+          <a href="https://www.instagram.com/zoetoelettatura/" target="_blank" rel="noopener">@zoetoelettatura</a>
+        </div>
+      </div>
+      <div class="social-links">
+        <a href="https://www.instagram.com/zoetoelettatura/" target="_blank" rel="noopener" class="social-link" aria-label="Instagram">📸</a>
+        <a href="https://wa.me/393420056508" target="_blank" rel="noopener" class="social-link" aria-label="WhatsApp">💬</a>
+      </div>
+    </div>
+    <div class="orari-card reveal">
+      <h3>🕐 Orari di Apertura</h3>
+      <div class="orari-row"><span class="day">Lunedì</span><span class="closed">Chiuso</span></div>
+      <div class="orari-row"><span class="day">Martedì</span><span class="hours">9:00 – 18:00</span></div>
+      <div class="orari-row"><span class="day">Mercoledì</span><span class="hours">9:00 – 18:00</span></div>
+      <div class="orari-row"><span class="day">Giovedì</span><span class="hours">9:00 – 18:00</span></div>
+      <div class="orari-row"><span class="day">Venerdì</span><span class="hours">9:00 – 18:00</span></div>
+      <div class="orari-row"><span class="day">Sabato</span><span class="hours">9:00 – 17:00</span></div>
+      <div class="orari-row"><span class="day">Domenica</span><span class="closed">Chiuso</span></div>
+      <p style="margin-top:1rem; font-size:0.82rem; color:#8B6F5A; font-style:italic;">* Gli orari potrebbero variare. Consigliamo di chiamare per appuntamento.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-name">🐾 Zoe Toelettatura</p>
+  <p>Centro Benessere per Cani e Gatti — P.zza Mons. Ciffo 8, Rosà (VI)</p>
+  <p style="margin-top:0.5rem;">© 2025 Zoe Toelettatura di Arianna Faré. Tutti i diritti riservati.</p>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 60));
+  function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
