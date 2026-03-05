@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Disponibilità — Zoe Toelettatura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/date_fns.min.js"></script>
+<style>
+  :root {
+    --cream: #FFF8F0;
+    --warm-pink: #F2D1C9;
+    --soft-peach: #FAEAE1;
+    --terracotta: #C4725F;
+    --forest: #4A6741;
+    --forest-light: #6B8C62;
+    --sand: #E8D5C4;
+    --brown: #6B4C3B;
+    --brown-light: #8B6E5D;
+    --white: #FFFFFF;
+    --gray100: #F7F3EF;
+    --gray200: #E8E0D8;
+    --gray400: #B0A498;
+    --gray600: #7A6E62;
+    --gray800: #3D3530;
+    --red: #C0392B;
+    --red-light: #FADBD8;
+    --whatsapp: #25D366;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    color: var(--gray800);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+  }
+  .header-emoji { font-size: 28px; margin-bottom: 4px; }
+  .header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 26px; font-weight: 700; color: white;
+    margin: 0 0 4px; letter-spacing: 0.5px;
+  }
+  .header p { color: rgba(255,255,255,0.8); font-size: 14px; margin: 0; }
+
+  .btn-admin {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.1); border: none;
+    border-radius: 8px; padding: 8px 10px; cursor: pointer;
+    color: rgba(255,255,255,0.7); display: flex; align-items: center;
+    transition: background 0.2s;
+  }
+  .btn-admin:hover { background: rgba(255,255,255,0.2); }
+  .btn-admin.active { background: rgba(255,255,255,0.25); }
+
+  /* ── NAV BACK TO SITE ─────────────────── */
+  .nav-home {
+    display: flex; align-items: center; gap: 6px;
+    position: absolute; top: 16px; left: 16px;
+    color: rgba(255,255,255,0.7); font-size: 13px;
+    text-decoration: none; font-weight: 500;
+  }
+  .nav-home:hover { color: white; }
+
+  /* ── CONTAINER ──────────────────────────── */
+  .container { max-width: 480px; margin: 0 auto; padding: 0 16px 100px; }
+
+  /* ── TOAST ──────────────────────────────── */
+  .toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-80px);
+    color: white; padding: 12px 24px; border-radius: 12px;
+    font-size: 14px; font-weight: 500; z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--forest); }
+  .toast.error { background: var(--red); }
+
+  /* ── MODAL ──────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    z-index: 999; display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white; border-radius: 20px; padding: 32px;
+    width: 100%; max-width: 340; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .modal-icon { text-align: center; color: var(--forest); margin-bottom: 4px; }
+  .modal h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    text-align: center; margin: 12px 0 4px; font-size: 20px;
+  }
+  .modal .subtitle { text-align: center; color: var(--gray400); font-size: 13px; margin-bottom: 20px; }
+  .modal input[type="password"] {
+    width: 100%; padding: 14px 16px; border-radius: 12px;
+    border: 2px solid var(--gray200); font-size: 16px; outline: none;
+    background: var(--gray100); font-family: inherit; transition: border-color 0.2s;
+  }
+  .modal input[type="password"]:focus { border-color: var(--forest); }
+  .modal input.error { border-color: var(--red); background: var(--red-light); }
+  .modal .error-msg { color: var(--red); font-size: 13px; text-align: center; margin-top: 8px; display: none; }
+  .modal .error-msg.show { display: block; }
+  .modal .btn-login {
+    width: 100%; padding: 14px; margin-top: 16px;
+    background: var(--forest); color: white; border: none;
+    border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ── ADMIN PANEL ────────────────────────── */
+  .admin-panel {
+    background: white; border-radius: 16px; padding: 20px; margin-top: 20px;
+    border: 2px solid var(--forest); box-shadow: 0 4px 20px rgba(74,103,65,0.1);
+    display: none;
+  }
+  .admin-panel.show { display: block; }
+  .admin-panel .title { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .admin-panel .title h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--forest); }
+
+  .field-label {
+    font-size: 12px; color: var(--gray600); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .field-input {
+    width: 100%; padding: 12px 14px; border-radius: 10px;
+    border: 1.5px solid var(--gray200); font-size: 15px;
+    margin-top: 4px; margin-bottom: 12px; background: var(--gray100);
+    outline: none; font-family: inherit;
+  }
+  .field-input:focus { border-color: var(--forest); }
+
+  .admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn-add, .btn-bulk {
+    flex: 1; min-width: 120px; padding: 12px 16px;
+    color: white; border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: inherit; display: flex; align-items: center;
+    justify-content: center; gap: 6px;
+  }
+  .btn-add { background: var(--forest); }
+  .btn-bulk { background: var(--forest-light); }
+
+  .admin-slots { margin-top: 16px; }
+  .admin-slots-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+  }
+  .admin-slots-header span { font-size: 13px; color: var(--gray600); font-weight: 600; }
+  .btn-clear-day {
+    background: var(--red-light); color: var(--red); border: none;
+    border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .admin-slot-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .admin-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--soft-peach); border-radius: 8px; padding: 6px 10px;
+  }
+  .admin-chip span { font-size: 13px; font-weight: 500; }
+  .admin-chip button {
+    background: none; border: none; cursor: pointer; color: var(--red);
+    padding: 2px; display: flex;
+  }
+
+  /* ── WEEK NAVIGATION ────────────────────── */
+  .week-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 24px; margin-bottom: 16px; padding: 0 4px;
+  }
+  .btn-week {
+    background: white; border: 1.5px solid var(--gray200);
+    border-radius: 10px; padding: 10px 12px; cursor: pointer;
+    display: flex; color: var(--gray800);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.2s;
+  }
+  .btn-week:disabled {
+    background: var(--gray200); color: var(--gray400);
+    cursor: default; box-shadow: none;
+  }
+  .week-label { text-align: center; }
+  .week-label .month {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 17px; font-weight: 700; color: var(--brown);
+  }
+  .week-label .sub { font-size: 12px; color: var(--gray400); margin-top: 2px; }
+
+  /* ── DAY PILLS ──────────────────────────── */
+  .day-pills {
+    display: flex; gap: 4px; margin-bottom: 20px;
+    overflow-x: auto; padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .day-pills::-webkit-scrollbar { display: none; }
+
+  .day-pill {
+    flex: 1; min-width: 52px; padding: 10px 4px;
+    background: white; border: 1.5px solid var(--gray200);
+    border-radius: 12px; cursor: pointer; text-align: center;
+    transition: all 0.2s; font-family: inherit;
+  }
+  .day-pill.past { opacity: 0.4; cursor: default; }
+  .day-pill.has-slots { border-color: var(--forest-light); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .day-pill.today { border-color: var(--terracotta); }
+  .day-pill.selected {
+    background: var(--forest); border-color: var(--forest);
+    box-shadow: 0 4px 12px rgba(74,103,65,0.25);
+  }
+  .day-pill .day-name {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    color: var(--gray400); letter-spacing: 0.5px; margin-bottom: 2px;
+  }
+  .day-pill.selected .day-name { color: rgba(255,255,255,0.8); }
+  .day-pill .day-num { font-size: 18px; font-weight: 700; color: var(--gray800); }
+  .day-pill.selected .day-num { color: white; }
+  .day-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--forest); margin: 4px auto 0;
+  }
+  .day-pill.selected .dot { background: white; }
+
+  /* ── SECTION TITLE ──────────────────────── */
+  .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px; margin: 0 0 12px 4px; color: var(--brown);
+  }
+
+  /* ── SLOT CARD (client view) ────────────── */
+  .slot-card {
+    display: flex; align-items: center; justify-content: space-between;
+    background: white; border-radius: 14px; padding: 14px 16px;
+    border: 1.5px solid var(--gray200); margin-bottom: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04); transition: all 0.2s;
+  }
+  .slot-left { display: flex; align-items: center; gap: 10px; }
+  .slot-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--soft-peach); display: flex;
+    align-items: center; justify-content: center; color: var(--terracotta);
+  }
+  .slot-time { font-size: 16px; font-weight: 700; }
+  .slot-avail { font-size: 12px; color: var(--gray400); }
+  .slot-right { display: flex; gap: 8px; align-items: center; }
+
+  .btn-delete-slot {
+    background: var(--red-light); border: none; border-radius: 10px;
+    padding: 10px; cursor: pointer; color: var(--red); display: flex;
+  }
+
+  .btn-whatsapp {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--whatsapp); color: white; border: none;
+    border-radius: 10px; padding: 10px 16px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    box-shadow: 0 2px 10px rgba(37,211,102,0.3); cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ── DAY OVERVIEW CARD ──────────────────── */
+  .day-card {
+    background: white; border-radius: 14px; padding: 16px;
+    margin-bottom: 10px; border: 1.5px solid var(--gray200);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .day-card:hover { border-color: var(--forest-light); }
+  .day-card-top {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .day-card-left { display: flex; align-items: center; gap: 8px; }
+  .day-card-num {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--forest), var(--forest-light));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 14px; font-weight: 700;
+  }
+  .day-card-name { font-size: 14px; font-weight: 700; }
+  .day-card-count { font-size: 12px; color: var(--gray400); }
+  .day-card-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .day-card-chip {
+    background: var(--soft-peach); border-radius: 8px;
+    padding: 5px 10px; font-size: 13px; font-weight: 500; color: var(--brown);
+  }
+  .day-card-more {
+    background: var(--gray100); border-radius: 8px;
+    padding: 5px 10px; font-size: 13px; color: var(--gray400);
+  }
+
+  /* ── EMPTY STATE ────────────────────────── */
+  .empty {
+    text-align: center; padding: 40px 20px;
+    background: white; border-radius: 16px;
+    border: 1.5px dashed var(--gray200);
+  }
+  .empty-big { padding: 48px 20px; }
+  .empty-emoji { font-size: 32px; margin-bottom: 8px; }
+  .empty-big .empty-emoji { font-size: 40px; margin-bottom: 12px; }
+  .empty p { color: var(--gray400); font-size: 14px; }
+  .empty .main-text { color: var(--gray600); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+
+  /* ── LOADING ────────────────────────────── */
+  .loading {
+    min-height: 100vh; background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .loading-inner { text-align: center; color: var(--brown-light); }
+  .loading-inner .emoji { font-size: 32px; margin-bottom: 12px; }
+  .loading-inner p {
+    font-family: 'Playfair Display', Georgia, serif; font-size: 18px;
+  }
+
+  /* ── FOOTER ─────────────────────────────── */
+  .footer {
+    text-align: center; padding: 20px 16px;
+    color: var(--gray400); font-size: 12px;
+    border-top: 1px solid var(--gray200); background: white;
+  }
+
+  /* ── SPINNER ────────────────────────────── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white; border-radius: 50%;
+    animation: spin 0.6s linear infinite; margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<!-- Loading state -->
+<div class="loading" id="loadingScreen">
+  <div class="loading-inner">
+    <div class="emoji">🐾</div>
+    <p>Caricamento...</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Login Modal -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h3>Area Admin</h3>
+    <p class="subtitle">Inserisci la password</p>
+    <input type="password" id="passwordInput" placeholder="Password">
+    <p class="error-msg" id="loginError">Password errata</p>
+    <button class="btn-login" onclick="handleLogin()">Accedi</button>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app" style="display:none">
+
+  <header class="header">
+    <a href="/" class="nav-home">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Home
+    </a>
+    <div class="header-emoji">🐾</div>
+    <h1>Zoe Toelettatura</h1>
+    <p>Prenota il tuo appuntamento</p>
+    <button class="btn-admin" id="btnAdmin" onclick="toggleAdmin()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </button>
+  </header>
+
+  <div class="container">
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <h3>Gestione Slot</h3>
+      </div>
+
+      <label class="field-label">Giorno</label>
+      <input type="date" class="field-input" id="adminDate">
+
+      <label class="field-label">Orario</label>
+      <input type="time" class="field-input" id="adminTime" value="09:00">
+
+      <div class="admin-actions">
+        <button class="btn-add" onclick="addSlot()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Aggiungi
+        </button>
+        <button class="btn-bulk" onclick="addBulkSlots()">+ Giornata intera</button>
+      </div>
+
+      <div class="admin-slots" id="adminSlots"></div>
+    </div>
+
+    <!-- Week Navigation -->
+    <div class="week-nav">
+      <button class="btn-week" id="btnPrev" onclick="changeWeek(-1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="week-label">
+        <div class="month" id="weekMonth"></div>
+        <div class="sub" id="weekSub"></div>
+      </div>
+      <button class="btn-week" onclick="changeWeek(1)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <!-- Day pills -->
+    <div class="day-pills" id="dayPills"></div>
+
+    <!-- Content area -->
+    <div id="content"></div>
+
+  </div>
+
+  <div class="footer">
+    <p>Zoe Toelettatura — Prenota via WhatsApp</p>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG — MODIFICA QUI
+// ═══════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://mrfgwmvmywhcyotzgvhu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_C_NCEj0M11x9Ovgb_Na5OQ_RYXIRikw';
+const WHATSAPP_NUMBER = '00393420056508'; // ⚠️ CAMBIA CON IL NUMERO REALE
+const ADMIN_PASSWORD = 'zoe2026';
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let slots = {};        // { "2026-03-10": ["09:00","10:00",...], ... }
+let isAdmin = false;
+let selectedDate = null;
+let weekOffset = 0;
+
+const DAYS_IT = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+const MONTHS_IT = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+
+// ═══════════════════════════════════════════════════════════════
+// SUPABASE HELPERS
+// ═══════════════════════════════════════════════════════════════
+const headers = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=minimal'
+};
+
+async function fetchSlots() {
+  const today = todayStr();
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/slots?date=gte.${today}&order=date.asc,time.asc`,
+    { headers }
+  );
+  if (!res.ok) throw new Error('Fetch failed');
+  const data = await res.json();
+
+  slots = {};
+  data.forEach(row => {
+    const d = row.date;
+    const t = row.time.slice(0, 5); // "09:00:00" → "09:00"
+    if (!slots[d]) slots[d] = [];
+    slots[d].push(t);
+  });
+}
+
+async function insertSlot(date, time) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/slots`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ date, time })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    if (err.code === '23505') throw new Error('duplicate');
+    throw new Error('Insert failed');
+  }
+}
+
+async function deleteSlot(date, time) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/slots?date=eq.${date}&time=eq.${time}`,
+    { method: 'DELETE', headers }
+  );
+  if (!res.ok) throw new Error('Delete failed');
+}
+
+async function deleteDay(date) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/slots?date=eq.${date}`,
+    { method: 'DELETE', headers }
+  );
+  if (!res.ok) throw new Error('Delete failed');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════════
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function formatDate(ds) {
+  const d = new Date(ds + 'T00:00:00');
+  return `${DAYS_IT[d.getDay()]} ${d.getDate()} ${MONTHS_IT[d.getMonth()]}`;
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function getWeekDates() {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(start.getDate() + weekOffset * 7);
+  const day = start.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  start.setDate(start.getDate() + diff);
+
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    dates.push(d.toISOString().split('T')[0]);
+  }
+  return dates;
+}
+
+function whatsappUrl(date, time) {
+  const msg = encodeURIComponent(
+    `Ciao! Vorrei prenotare un appuntamento per il giorno ${formatDate(date)} alle ore ${time}. Grazie!`
+  );
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════════════════════
+function toggleAdmin() {
+  if (isAdmin) {
+    isAdmin = false;
+    document.getElementById('adminPanel').classList.remove('show');
+    document.getElementById('btnAdmin').classList.remove('active');
+  } else {
+    document.getElementById('loginModal').classList.add('show');
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
+  }
+}
+
+function handleLogin() {
+  const pw = document.getElementById('passwordInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    isAdmin = true;
+    document.getElementById('loginModal').classList.remove('show');
+    document.getElementById('adminPanel').classList.add('show');
+    document.getElementById('btnAdmin').classList.add('active');
+    document.getElementById('loginError').classList.remove('show');
+    document.getElementById('passwordInput').classList.remove('error');
+    showToast('Accesso admin attivo');
+    renderAdminSlots();
+  } else {
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('passwordInput').classList.add('error');
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('loginModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.classList.remove('show');
+    document.getElementById('loginError').classList.remove('show');
+    document.getElementById('passwordInput').classList.remove('error');
+  }
+});
+
+// Enter key on password
+document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') handleLogin();
+});
+
+async function addSlot() {
+  const date = document.getElementById('adminDate').value;
+  const time = document.getElementById('adminTime').value;
+  if (!date || !time) return;
+  try {
+    await insertSlot(date, time);
+    if (!slots[date]) slots[date] = [];
+    if (!slots[date].includes(time)) {
+      slots[date].push(time);
+      slots[date].sort();
+    }
+    showToast(`Slot ${time} aggiunto per ${formatDate(date)}`);
+    render();
+  } catch (e) {
+    if (e.message === 'duplicate') showToast('Slot già presente', 'error');
+    else showToast('Errore nel salvataggio', 'error');
+  }
+}
+
+async function addBulkSlots() {
+  const date = document.getElementById('adminDate').value;
+  if (!date) return;
+  const times = ['09:00','10:00','11:00','14:00','15:00','16:00','17:00'];
+  let added = 0;
+  for (const t of times) {
+    try {
+      await insertSlot(date, t);
+      if (!slots[date]) slots[date] = [];
+      if (!slots[date].includes(t)) { slots[date].push(t); added++; }
+    } catch (e) { /* skip duplicates */ }
+  }
+  if (slots[date]) slots[date].sort();
+  showToast(`${added} slot aggiunti per ${formatDate(date)}`);
+  render();
+}
+
+async function removeSlot(date, time) {
+  try {
+    await deleteSlot(date, time);
+    slots[date] = slots[date].filter(t => t !== time);
+    if (slots[date].length === 0) delete slots[date];
+    showToast(`Slot ${time} rimosso`, 'error');
+    render();
+  } catch (e) {
+    showToast('Errore nella rimozione', 'error');
+  }
+}
+
+async function clearDay(date) {
+  try {
+    await deleteDay(date);
+    delete slots[date];
+    showToast(`Tutti gli slot rimossi per ${formatDate(date)}`, 'error');
+    render();
+  } catch (e) {
+    showToast('Errore nella rimozione', 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function render() {
+  renderWeekNav();
+  renderDayPills();
+  renderContent();
+  if (isAdmin) renderAdminSlots();
+}
+
+function renderWeekNav() {
+  const dates = getWeekDates();
+  const d = new Date(dates[0] + 'T00:00:00');
+  document.getElementById('weekMonth').textContent = `${MONTHS_IT[d.getMonth()]} ${d.getFullYear()}`;
+  document.getElementById('weekSub').textContent =
+    weekOffset === 0 ? 'Questa settimana' : `+${weekOffset} settimana${weekOffset > 1 ? 'e' : ''}`;
+  document.getElementById('btnPrev').disabled = weekOffset === 0;
+}
+
+function renderDayPills() {
+  const dates = getWeekDates();
+  const today = todayStr();
+  let html = '';
+  dates.forEach(date => {
+    const d = new Date(date + 'T00:00:00');
+    const isPast = date < today;
+    const hasSlots = slots[date] && slots[date].length > 0 && !isPast;
+    const isSelected = selectedDate === date;
+    const isToday = date === today;
+
+    let cls = 'day-pill';
+    if (isPast) cls += ' past';
+    if (hasSlots) cls += ' has-slots';
+    if (isToday) cls += ' today';
+    if (isSelected) cls += ' selected';
+
+    html += `
+      <button class="${cls}" onclick="${isPast ? '' : `selectDate('${date}')`}">
+        <div class="day-name">${DAYS_IT[d.getDay()].slice(0,3)}</div>
+        <div class="day-num">${d.getDate()}</div>
+        ${hasSlots ? '<div class="dot"></div>' : ''}
+      </button>`;
+  });
+  document.getElementById('dayPills').innerHTML = html;
+}
+
+function renderContent() {
+  const el = document.getElementById('content');
+  const today = todayStr();
+
+  if (selectedDate) {
+    // Show slots for selected date
+    const daySlots = (selectedDate >= today && slots[selectedDate]) ? slots[selectedDate] : [];
+    let html = `<h3 class="section-title">${formatDate(selectedDate)}</h3>`;
+
+    if (daySlots.length > 0) {
+      daySlots.forEach(time => {
+        html += `
+          <div class="slot-card">
+            <div class="slot-left">
+              <div class="slot-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="slot-time">${time}</div>
+                <div class="slot-avail">Disponibile</div>
+              </div>
+            </div>
+            <div class="slot-right">
+              ${isAdmin ? `<button class="btn-delete-slot" onclick="removeSlot('${selectedDate}','${time}')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>` : ''}
+              <a href="${whatsappUrl(selectedDate, time)}" target="_blank" rel="noopener" class="btn-whatsapp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Prenota
+              </a>
+            </div>
+          </div>`;
+      });
+    } else {
+      html += `
+        <div class="empty">
+          <div class="empty-emoji">😔</div>
+          <p>Nessuno slot disponibile per questo giorno</p>
+        </div>`;
+    }
+    el.innerHTML = html;
+    return;
+  }
+
+  // Overview: upcoming days with slots
+  const futureDays = Object.keys(slots).filter(d => d >= today).sort().slice(0, 8);
+  let html = '<h3 class="section-title">Prossime disponibilità</h3>';
+
+  if (futureDays.length === 0) {
+    html += `
+      <div class="empty empty-big">
+        <div class="empty-emoji">🐾</div>
+        <p class="main-text">Nessuna disponibilità al momento</p>
+        <p>Controlla di nuovo più tardi!</p>
+      </div>`;
+    el.innerHTML = html;
+    return;
+  }
+
+  futureDays.forEach(date => {
+    const d = new Date(date + 'T00:00:00');
+    const count = slots[date].length;
+    let chipsHtml = slots[date].slice(0, 6).map(t =>
+      `<span class="day-card-chip">${t}</span>`
+    ).join('');
+    if (count > 6) chipsHtml += `<span class="day-card-more">+${count - 6}</span>`;
+
+    html += `
+      <div class="day-card" onclick="selectDate('${date}')">
+        <div class="day-card-top">
+          <div class="day-card-left">
+            <div class="day-card-num">${d.getDate()}</div>
+            <div>
+              <div class="day-card-name">${formatDate(date)}</div>
+              <div class="day-card-count">${count} slot disponibil${count === 1 ? 'e' : 'i'}</div>
+            </div>
+          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B0A498" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="day-card-chips">${chipsHtml}</div>
+      </div>`;
+  });
+
+  el.innerHTML = html;
+}
+
+function renderAdminSlots() {
+  const date = document.getElementById('adminDate').value;
+  const el = document.getElementById('adminSlots');
+  if (!date || !slots[date] || slots[date].length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+  let chipsHtml = slots[date].map(t => `
+    <div class="admin-chip">
+      <span>${t}</span>
+      <button onclick="removeSlot('${date}','${t}')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </button>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="admin-slots-header">
+      <span>Slot per ${formatDate(date)}</span>
+      <button class="btn-clear-day" onclick="clearDay('${date}')">Svuota giorno</button>
+    </div>
+    <div class="admin-slot-chips">${chipsHtml}</div>`;
+}
+
+// Admin date change → update slots preview
+document.getElementById('adminDate').addEventListener('change', renderAdminSlots);
+
+function selectDate(date) {
+  selectedDate = selectedDate === date ? null : date;
+  render();
+}
+
+function changeWeek(dir) {
+  weekOffset = Math.max(0, weekOffset + dir);
+  selectedDate = null;
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+(async function init() {
+  // Set min date on admin input
+  document.getElementById('adminDate').min = todayStr();
+  document.getElementById('adminDate').value = todayStr();
+
+  try {
+    await fetchSlots();
+  } catch (e) {
+    console.error('Failed to load slots:', e);
+  }
+
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  render();
+})();
+</script>
+</body>
+</html>
