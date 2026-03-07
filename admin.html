@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestione Prodotti — Zoe Toelettatura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:#FFF8F0;--soft-peach:#FAEAE1;--terracotta:#C4725F;
+    --forest:#4A6741;--forest-light:#6B8C62;--brown:#6B4C3B;--brown-light:#8B6E5D;
+    --white:#FFFFFF;--gray100:#F7F3EF;--gray200:#E8E0D8;--gray400:#B0A498;
+    --gray600:#7A6E62;--gray800:#3D3530;--red:#C0392B;--red-light:#FADBD8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--gray800);min-height:100vh}
+  .header{background:linear-gradient(135deg,var(--forest),var(--forest-light));padding:28px 20px 24px;text-align:center;position:relative}
+  .header h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white;margin:4px 0}
+  .header p{color:rgba(255,255,255,.8);font-size:14px}
+  .nav-home{position:absolute;top:16px;left:16px;color:rgba(255,255,255,.7);font-size:13px;text-decoration:none;font-weight:500;display:flex;align-items:center;gap:4px}
+  .nav-home:hover{color:white}
+  .btn-logout{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;border-radius:8px;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.9);font-size:12px;font-weight:600;font-family:inherit;transition:background .2s}
+  .btn-logout:hover{background:rgba(255,255,255,.25)}
+  .login-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+  .login-box{background:white;border-radius:20px;padding:32px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.1);text-align:center}
+  .login-box .icon{color:var(--forest);margin-bottom:4px}
+  .login-box h2{font-family:'Playfair Display',serif;font-size:22px;margin:12px 0 4px}
+  .login-box .subtitle{color:var(--gray400);font-size:13px;margin-bottom:20px}
+  .login-box input{width:100%;padding:14px 16px;border-radius:12px;border:2px solid var(--gray200);font-size:16px;outline:none;background:var(--gray100);font-family:inherit;transition:border .2s}
+  .login-box input:focus{border-color:var(--forest)}
+  .login-box input.error{border-color:var(--red);background:var(--red-light)}
+  .login-box .error-msg{color:var(--red);font-size:13px;margin-top:8px;display:none}
+  .login-box .error-msg.show{display:block}
+  .login-box .btn-login{width:100%;padding:14px;margin-top:16px;background:var(--forest);color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+  .login-box .btn-login:hover{background:#3d5a36}
+  .admin-app{display:none}
+  .container{max-width:800px;margin:0 auto;padding:20px 16px 100px}
+  .form-card{background:white;border-radius:16px;padding:20px;margin-bottom:20px;border:1.5px solid var(--gray200);box-shadow:0 2px 10px rgba(0,0,0,.03)}
+  .form-card h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--forest);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-group{display:flex;flex-direction:column;gap:4px}
+  .form-group.full{grid-column:1/-1}
+  .field-label{font-size:12px;color:var(--gray600);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .field-input{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--gray200);font-size:15px;background:var(--gray100);outline:none;font-family:inherit;transition:border .2s}
+  .field-input:focus{border-color:var(--forest)}
+  textarea.field-input{resize:vertical;min-height:80px}
+  .img-preview{width:70px;height:70px;border-radius:10px;object-fit:cover;border:1.5px solid var(--gray200);display:none;margin-top:4px}
+  .form-actions{display:flex;gap:8px;margin-top:16px}
+  .btn-save{flex:1;padding:14px;background:var(--forest);color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+  .btn-save:hover{background:#3d5a36}
+  .btn-save:disabled{opacity:.5;cursor:default}
+  .btn-cancel{padding:14px 20px;background:var(--gray100);color:var(--gray600);border:1.5px solid var(--gray200);border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;display:none;transition:all .2s}
+  .btn-cancel:hover{background:var(--gray200)}
+  .list-title{font-family:'Playfair Display',serif;font-size:18px;margin:24px 0 14px 4px;color:var(--brown)}
+  .product-row{display:flex;align-items:center;gap:12px;background:white;border-radius:14px;padding:12px 16px;margin-bottom:8px;border:1.5px solid var(--gray200);box-shadow:0 2px 10px rgba(0,0,0,.03);transition:all .2s}
+  .product-row:hover{border-color:var(--forest-light)}
+  .prod-thumb{width:50px;height:50px;border-radius:10px;background:var(--soft-peach);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;overflow:hidden}
+  .prod-thumb img{width:100%;height:100%;object-fit:cover}
+  .prod-info{flex:1;min-width:0}
+  .prod-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prod-meta{font-size:12px;color:var(--gray400);display:flex;gap:8px;align-items:center;margin-top:2px}
+  .prod-cat{background:var(--soft-peach);border-radius:6px;padding:2px 8px;font-weight:600;color:var(--brown);font-size:11px}
+  .prod-price{font-weight:700;color:var(--forest);font-size:15px;white-space:nowrap;margin:0 8px}
+  .prod-actions{display:flex;gap:6px;flex-shrink:0}
+  .action-btn{border:none;border-radius:8px;padding:8px;cursor:pointer;display:flex;font-size:14px;transition:all .2s;font-family:inherit}
+  .btn-edit{background:var(--gray100);color:var(--gray600)}
+  .btn-edit:hover{background:var(--soft-peach);color:var(--brown)}
+  .btn-toggle{background:#FFF3CD;color:#856404}
+  .btn-toggle:hover{background:#FFE69C}
+  .btn-del{background:var(--red-light);color:var(--red)}
+  .btn-del:hover{background:var(--red);color:white}
+  .prod-hidden{opacity:.5}
+  .empty{text-align:center;padding:48px 20px;background:white;border-radius:16px;border:1.5px dashed var(--gray200)}
+  .empty .emoji{font-size:40px;margin-bottom:12px}
+  .empty p{color:var(--gray400);font-size:14px}
+  .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);color:white;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:500;z-index:1000;box-shadow:0 8px 32px rgba(0,0,0,.15);transition:transform .3s;pointer-events:none}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+  .toast.success{background:var(--forest)}
+  .toast.error{background:var(--red)}
+  @media(max-width:600px){.form-grid{grid-template-columns:1fr}.prod-price{display:none}.product-row{padding:10px 12px}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrapper" id="loginScreen">
+  <div class="login-box">
+    <div class="icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <h2>Gestione Prodotti</h2>
+    <p class="subtitle">Inserisci la password per accedere</p>
+    <input type="password" id="passwordInput" placeholder="Password">
+    <p class="error-msg" id="loginError">Password errata</p>
+    <button class="btn-login" onclick="handleLogin()">Accedi</button>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div class="admin-app" id="adminApp">
+  <header class="header">
+    <a href="index.html" class="nav-home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg> Sito</a>
+    <div style="font-size:24px">📦</div>
+    <h1>Gestione Prodotti</h1>
+    <p>Aggiungi e modifica i prodotti dello shop</p>
+    <button class="btn-logout" onclick="handleLogout()">Esci</button>
+  </header>
+  <div class="container">
+    <div class="form-card">
+      <h3 id="formTitle">➕ Aggiungi Prodotto</h3>
+      <input type="hidden" id="editId">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="field-label">Nome prodotto</label>
+          <input type="text" class="field-input" id="prodNome" placeholder="Es. Crocchette Premium">
+        </div>
+        <div class="form-group">
+          <label class="field-label">Categoria</label>
+          <select class="field-input" id="prodCategoria">
+            <option value="cibo">Cibo & Snack</option>
+            <option value="accessori">Accessori</option>
+            <option value="cura">Cura del Pelo</option>
+            <option value="salute">Salute & Antiparassitari</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="field-label">Prezzo (€)</label>
+          <input type="number" class="field-input" id="prodPrezzo" placeholder="29.90" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label class="field-label">Ordine (0 = primo)</label>
+          <input type="number" class="field-input" id="prodOrdine" placeholder="0" min="0" value="0">
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Descrizione</label>
+          <textarea class="field-input" id="prodDescrizione" placeholder="Breve descrizione del prodotto..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="field-label">Immagine prodotto</label>
+          <input type="file" class="field-input" id="prodImmagine" accept="image/*" onchange="previewImg(this)" style="padding:8px">
+          <img class="img-preview" id="imgPreview">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" id="btnSave" onclick="handleSave()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Salva Prodotto
+        </button>
+        <button class="btn-cancel" id="btnCancel" onclick="cancelEdit()">Annulla</button>
+      </div>
+    </div>
+    <h3 class="list-title">📋 Prodotti in catalogo</h3>
+    <div id="productList"><div class="empty"><div class="emoji">⏳</div><p>Caricamento...</p></div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL='https://mrfgwmvmywhcyotzgvhu.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1yZmd3bXZteXdoY3lvdHpndmh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0NDU4MTEsImV4cCI6MjA4ODAyMTgxMX0.9Q-pyM1r44G6djZzMCXp_1w1hQ8_pp7ZiAv2ZQJMhoI';
+const ADMIN_PASSWORD='zoe2026';
+const hdrs={'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+const CAT_LABELS={cibo:'Cibo & Snack',accessori:'Accessori',cura:'Cura Pelo',salute:'Salute'};
+const CAT_EMOJI={cibo:'🍗',accessori:'🦮',cura:'🧴',salute:'🛡️'};
+
+function handleLogin(){
+  const pw=document.getElementById('passwordInput').value;
+  if(pw===ADMIN_PASSWORD){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    document.getElementById('loginError').classList.remove('show');
+    document.getElementById('passwordInput').classList.remove('error');
+    loadProducts();
+  }else{
+    document.getElementById('loginError').classList.add('show');
+    document.getElementById('passwordInput').classList.add('error');
+  }
+}
+function handleLogout(){
+  document.getElementById('adminApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('passwordInput').value='';
+}
+document.getElementById('passwordInput').addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin()});
+
+async function loadProducts(){
+  const el=document.getElementById('productList');
+  el.innerHTML='<div class="empty"><div class="emoji">⏳</div><p>Caricamento...</p></div>';
+  try{
+    const r=await fetch(`${SUPABASE_URL}/rest/v1/prodotti?order=ordine.asc,created_at.desc`,{headers:hdrs});
+    if(!r.ok)throw new Error('Fetch failed');
+    const data=await r.json();
+    if(!data.length){el.innerHTML='<div class="empty"><div class="emoji">📦</div><p>Nessun prodotto. Aggiungine uno!</p></div>';return}
+    el.innerHTML=data.map(p=>{
+      const prezzo=Number(p.prezzo).toFixed(2).replace('.',',');
+      const img=p.immagine_url?`<img src="${p.immagine_url}" alt="">`:(CAT_EMOJI[p.categoria]||'📦');
+      const hidden=!p.attivo?' prod-hidden':'';
+      const toggleLabel=p.attivo?'👁️':'🔇';
+      return`<div class="product-row${hidden}">
+        <div class="prod-thumb">${img}</div>
+        <div class="prod-info"><div class="prod-name">${esc(p.nome)}</div><div class="prod-meta"><span class="prod-cat">${CAT_LABELS[p.categoria]||p.categoria}</span>${!p.attivo?'<span style="color:var(--red)">nascosto</span>':''}</div></div>
+        <div class="prod-price">€${prezzo}</div>
+        <div class="prod-actions">
+          <button class="action-btn btn-edit" onclick='startEdit(${JSON.stringify(p).replace(/'/g,"&#39;")})'>✏️</button>
+          <button class="action-btn btn-toggle" onclick="toggleProd('${p.id}',${!p.attivo})">${toggleLabel}</button>
+          <button class="action-btn btn-del" onclick="deleteProd('${p.id}')">🗑️</button>
+        </div></div>`;
+    }).join('');
+  }catch(err){console.error(err);el.innerHTML='<div class="empty"><div class="emoji">⚠️</div><p>Errore. Riprova.</p></div>'}
+}
+
+async function handleSave(){
+  const btn=document.getElementById('btnSave');
+  const editId=document.getElementById('editId').value;
+  const nome=document.getElementById('prodNome').value.trim();
+  const descrizione=document.getElementById('prodDescrizione').value.trim();
+  const prezzo=parseFloat(document.getElementById('prodPrezzo').value)||0;
+  const categoria=document.getElementById('prodCategoria').value;
+  const ordine=parseInt(document.getElementById('prodOrdine').value)||0;
+  const fileInput=document.getElementById('prodImmagine');
+  if(!nome){showToast('Inserisci il nome','error');return}
+  btn.disabled=true;
+  btn.innerHTML='<div style="width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite"></div> Salvataggio...';
+  let immagine_url=null;
+  if(fileInput.files.length>0){
+    const file=fileInput.files[0];
+    const ext=file.name.split('.').pop();
+    const fileName=`${Date.now()}_${Math.random().toString(36).substr(2,8)}.${ext}`;
+    const upRes=await fetch(`${SUPABASE_URL}/storage/v1/object/prodotti-img/${fileName}`,{
+      method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':file.type,'x-upsert':'false'},body:file
+    });
+    if(upRes.ok){immagine_url=`${SUPABASE_URL}/storage/v1/object/public/prodotti-img/${fileName}`}
+    else{showToast('Errore upload immagine','error');resetBtn();return}
+  }
+  const body={nome,descrizione,prezzo,categoria,ordine};
+  if(immagine_url)body.immagine_url=immagine_url;
+  if(!editId&&!immagine_url)body.immagine_url=null;
+  try{
+    let url=`${SUPABASE_URL}/rest/v1/prodotti`,method='POST';
+    if(editId){url+=`?id=eq.${editId}`;method='PATCH'}
+    const r=await fetch(url,{method,headers:hdrs,body:JSON.stringify(body)});
+    if(!r.ok)throw new Error('fail');
+    showToast(editId?'Prodotto aggiornato!':'Prodotto aggiunto!');clearForm();loadProducts();
+  }catch(e){showToast('Errore salvataggio','error')}
+  resetBtn();
+}
+function resetBtn(){
+  const btn=document.getElementById('btnSave');btn.disabled=false;
+  btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Salva Prodotto';
+}
+
+function startEdit(p){
+  document.getElementById('editId').value=p.id;
+  document.getElementById('prodNome').value=p.nome;
+  document.getElementById('prodDescrizione').value=p.descrizione||'';
+  document.getElementById('prodPrezzo').value=p.prezzo;
+  document.getElementById('prodCategoria').value=p.categoria;
+  document.getElementById('prodOrdine').value=p.ordine||0;
+  document.getElementById('formTitle').textContent='✏️ Modifica Prodotto';
+  document.getElementById('btnSave').innerHTML='✏️ Aggiorna Prodotto';
+  document.getElementById('btnCancel').style.display='block';
+  if(p.immagine_url){const prev=document.getElementById('imgPreview');prev.src=p.immagine_url;prev.style.display='block'}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function cancelEdit(){clearForm()}
+function clearForm(){
+  ['editId','prodNome','prodDescrizione','prodPrezzo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('prodCategoria').value='cibo';
+  document.getElementById('prodOrdine').value='0';
+  document.getElementById('prodImmagine').value='';
+  document.getElementById('imgPreview').style.display='none';
+  document.getElementById('formTitle').textContent='➕ Aggiungi Prodotto';
+  resetBtn();
+  document.getElementById('btnCancel').style.display='none';
+}
+
+async function toggleProd(id,newState){
+  await fetch(`${SUPABASE_URL}/rest/v1/prodotti?id=eq.${id}`,{method:'PATCH',headers:hdrs,body:JSON.stringify({attivo:newState})});
+  showToast(newState?'Prodotto visibile!':'Prodotto nascosto');loadProducts();
+}
+async function deleteProd(id){
+  if(!confirm('Sicura di voler eliminare questo prodotto?'))return;
+  await fetch(`${SUPABASE_URL}/rest/v1/prodotti?id=eq.${id}`,{method:'DELETE',headers:hdrs});
+  showToast('Prodotto eliminato','error');loadProducts();
+}
+
+function previewImg(input){
+  const prev=document.getElementById('imgPreview');
+  if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{prev.src=e.target.result;prev.style.display='block'};r.readAsDataURL(input.files[0])}
+}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),2500)}
+</script>
+</body>
+</html>
