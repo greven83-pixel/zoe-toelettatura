@@ -324,27 +324,6 @@
   /* INSTAGRAM FEED */
   .instagram-feed { background: var(--cream); }
   .instagram-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
-  .insta-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2.5rem;
-  }
-  .insta-item {
-    position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 1;
-    cursor: pointer; transition: transform 0.3s;
-  }
-  .insta-item:hover { transform: scale(1.03); }
-  .insta-item img { width: 100%; height: 100%; object-fit: cover; }
-  .insta-item .insta-overlay {
-    position: absolute; inset: 0; background: rgba(61,46,34,0.5);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; transition: opacity 0.3s;
-  }
-  .insta-item:hover .insta-overlay { opacity: 1; }
-  .insta-overlay span { color: white; font-size: 0.9rem; font-weight: 600; }
-  .insta-reel-badge {
-    position: absolute; top: 0.6rem; right: 0.6rem;
-    background: rgba(255,255,255,0.9); border-radius: 6px; padding: 0.15rem 0.5rem;
-    font-size: 0.7rem; font-weight: 600; color: var(--dark);
-  }
   .insta-cta {
     display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem;
     padding: 0.9rem 2rem; border-radius: 50px; text-decoration: none;
@@ -353,9 +332,7 @@
     box-shadow: 0 8px 25px rgba(131,58,180,0.25);
   }
   .insta-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(131,58,180,0.35); }
-  .insta-loading { padding: 3rem; color: var(--warm-brown); font-style: italic; }
-  @media (max-width: 900px) { .insta-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 600px) { .insta-grid { grid-template-columns: repeat(2, 1fr); } }
+  .insta-widget { margin-top: 2.5rem; }
 
   /* FOOTER */
   footer {
@@ -542,8 +519,9 @@
   <div class="instagram-inner">
     <p class="section-label">Seguici su Instagram</p>
     <h2 class="section-title">Le nostre ultime creazioni 📸</h2>
-    <div class="insta-grid" id="instaGrid">
-      <div class="insta-loading">Caricamento post Instagram...</div>
+    <div class="insta-widget">
+      <div id="ft-insta-app"></div>
+      <script type="module">import App from "https://cdn.fouita.com/public/instagram-feed.js?11";new App({target: document.getElementById("ft-insta-app"),props:{"settings":{"layout":"grid","source":"insta","selected":"username","username":"zoetoelettatura","header":true,"autoplay":true,"zigzag":false,"cols":4,"cardHeight":300,"gap":0,"direction":"down","height":700,"bgColor":"","txtColor":""}}});</script>
     </div>
     <a href="https://www.instagram.com/zoetoelettatura/" target="_blank" rel="noopener" class="insta-cta">
       📸 Seguici su @zoetoelettatura
@@ -616,7 +594,6 @@
   // ============================================
   const SUPABASE_URL = 'https://mrfgwmvmywhcyotzgvhu.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1yZmd3bXZteXdoY3lvdHpndmh1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0NDU4MTEsImV4cCI6MjA4ODAyMTgxMX0.9Q-pyM1r44G6djZzMCXp_1w1hQ8_pp7ZiAv2ZQJMhoI';
-  const INSTAGRAM_TOKEN = '';  // ← Inserisci qui il tuo Instagram Token
   const hdrs = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
 
   // --- NAV ---
@@ -709,37 +686,8 @@
     renderProducts(category);
   }
 
-  // --- INSTAGRAM FEED ---
-  async function loadInstagram() {
-    const grid = document.getElementById('instaGrid');
-    if (!INSTAGRAM_TOKEN) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;"><p style="color:var(--warm-brown);">Scopri i nostri lavori su Instagram!</p></div>';
-      return;
-    }
-    try {
-      const res = await fetch(
-        'https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink&limit=8&access_token=' + INSTAGRAM_TOKEN
-      );
-      const data = await res.json();
-      if (!data.data || !data.data.length) { grid.innerHTML = '<div class="insta-loading">Nessun post trovato.</div>'; return; }
-      grid.innerHTML = data.data.map(post => {
-        const imgUrl = post.media_type === 'VIDEO' ? (post.thumbnail_url || '') : post.media_url;
-        const isReel = post.media_type === 'VIDEO';
-        if (!imgUrl) return '';
-        return '<a class="insta-item" href="' + post.permalink + '" target="_blank" rel="noopener">' +
-          '<img src="' + imgUrl + '" alt="" loading="lazy">' +
-          (isReel ? '<span class="insta-reel-badge">▶ Reel</span>' : '') +
-          '<div class="insta-overlay"><span>Vedi su Instagram</span></div></a>';
-      }).join('');
-    } catch (err) {
-      console.error('Errore Instagram:', err);
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;"><p style="color:var(--warm-brown);">Seguici su Instagram per vedere i nostri lavori!</p></div>';
-    }
-  }
-
   // --- INIT ---
   loadShopProducts();
-  loadInstagram();
 </script>
 </body>
 </html>
