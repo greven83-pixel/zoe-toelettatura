@@ -333,6 +333,12 @@
   }
   .insta-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(131,58,180,0.35); }
   .insta-widget { margin-top: 2.5rem; }
+  .insta-embed-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+    max-width: 1100px; margin: 0 auto; justify-items: center;
+  }
+  .insta-embed-grid .instagram-media { min-width: 100% !important; max-width: 100% !important; }
+  @media (max-width: 700px) { .insta-embed-grid { grid-template-columns: 1fr; } }
 
   /* FOOTER */
   footer {
@@ -520,8 +526,13 @@
     <p class="section-label">Seguici su Instagram</p>
     <h2 class="section-title">Le nostre ultime creazioni 📸</h2>
     <div class="insta-widget">
-      <div id="ft-insta-app"></div>
-      <script type="module">import App from "https://cdn.fouita.com/public/instagram-feed.js?11";new App({target: document.getElementById("ft-insta-app"),props:{"settings":{"layout":"grid","source":"insta","selected":"username","username":"zoetoelettatura","header":true,"autoplay":true,"zigzag":false,"cols":4,"cardHeight":300,"gap":0,"direction":"down","height":700,"bgColor":"","txtColor":""}}});</script>
+      <div class="insta-embed-grid">
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DVfJr7RE__7/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:0;padding:0;width:100%;max-width:540px;"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DQ-51fOkSe1/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:0;padding:0;width:100%;max-width:540px;"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DJooZhSowZn/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:0;padding:0;width:100%;max-width:540px;"></blockquote>
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DLE-3wKyO4i/" data-instgrm-version="14" style="background:#FFF;border:0;border-radius:12px;box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15);margin:0;padding:0;width:100%;max-width:540px;"></blockquote>
+      </div>
+      <script async src="//www.instagram.com/embed.js"></script>
     </div>
     <a href="https://www.instagram.com/zoetoelettatura/" target="_blank" rel="noopener" class="insta-cta">
       📸 Seguici su @zoetoelettatura
